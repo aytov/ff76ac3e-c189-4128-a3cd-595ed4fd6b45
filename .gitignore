@@ -6,3 +6,4 @@ target
 MANIFEST.MF
 .idea
 *.iml
+classes/

@@ -27,7 +27,7 @@ public class StockPriceDataProviderImpl implements StockPriceDataProvider {
 	@Override
 	public Map<String, Map<String, StockPrice>> getHistoricalData() {
 		try {
-			return loadHistoryData(getDataRoot(), getCurrentData());
+			return loadHistoricalData(getDataRoot(), getCurrentData());
 		} catch (IOException | ParseException e) {
 			throw new BusinessException(BusinessException.Type.HISTORICAL_DATA_LOAD_EXCEPTION);
 		}
@@ -52,13 +52,13 @@ public class StockPriceDataProviderImpl implements StockPriceDataProvider {
 			String fileName = DateUtils.dateToStr(new Date()) + DATA_EXTENSION;
 			File currentDataFile = new File(getDataRoot().getAbsolutePath() + "/" + fileName);
 
-			return loadCurrentPrices(currentDataFile);
+			return loadCurrentData(currentDataFile);
 		} catch (IOException|ParseException e) {
 			throw new BusinessException(BusinessException.Type.CURRENT_DATA_LOAD_EXCEPTION);
 		}
 	}
 
-	private Map<String, StockPrice> loadCurrentPrices(File path) throws IOException {
+	private Map<String, StockPrice> loadCurrentData(File path) throws IOException {
 		Map<String, StockPrice> stockPrices = new HashMap<>(4);
 
 		Reader in = new FileReader(path);
@@ -74,7 +74,7 @@ public class StockPriceDataProviderImpl implements StockPriceDataProvider {
 		return stockPrices;
 	}
 
-	private Map<String, Map<String, StockPrice>> loadHistoryData(File dataRoot, Map<String, StockPrice> currentPrices)
+	private Map<String, Map<String, StockPrice>> loadHistoricalData(File dataRoot, Map<String, StockPrice> currentPrices)
 			throws IOException, ParseException {
 		Map<String, Map<String, StockPrice>> stockPriceByDate = new HashMap<>(4);
 

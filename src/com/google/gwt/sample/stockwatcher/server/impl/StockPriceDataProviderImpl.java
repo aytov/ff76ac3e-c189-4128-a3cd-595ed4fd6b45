@@ -20,14 +20,24 @@ import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVRecord;
 
 public class StockPriceDataProviderImpl implements StockPriceDataProvider {
-	private static final String DATA_ROOT = "/data";
-	private static final String DATA_EXTENSION = ".csv";
 	private static Logger Log = Logger.getLogger("StockPriceDataProviderImpl");
 
+	private static final String DATA_ROOT = "/data";
+	private static final String DATA_EXTENSION = ".csv";
+	private final File dataRoot;
+
+	public StockPriceDataProviderImpl(File dataRoot){
+		this.dataRoot = dataRoot;
+	}
+
+	public StockPriceDataProviderImpl(){
+		this.dataRoot = getDataRoot();
+	}
+
 	@Override
-	public Map<String, Map<String, StockPrice>> getHistoricalData() {
+	public Map<String, Map<String, StockPrice>> getHistoricalData(Map<String, StockPrice> currentData) {
 		try {
-			return loadHistoricalData(getDataRoot(), getCurrentData());
+			return loadHistoricalData(dataRoot, currentData);
 		} catch (IOException | ParseException e) {
 			throw new BusinessException(BusinessException.Type.HISTORICAL_DATA_LOAD_EXCEPTION);
 		}
@@ -50,7 +60,7 @@ public class StockPriceDataProviderImpl implements StockPriceDataProvider {
 	public Map<String, StockPrice> getCurrentData() {
 		try {
 			String fileName = DateUtils.dateToStr(new Date()) + DATA_EXTENSION;
-			File currentDataFile = new File(getDataRoot().getAbsolutePath() + "/" + fileName);
+			File currentDataFile = new File(dataRoot.getAbsolutePath() + "/" + fileName);
 
 			return loadCurrentData(currentDataFile);
 		} catch (IOException|ParseException e) {

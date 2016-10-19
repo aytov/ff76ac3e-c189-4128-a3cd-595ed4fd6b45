@@ -13,8 +13,16 @@ import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 @SuppressWarnings("serial")
 public class StockPriceServiceImpl extends RemoteServiceServlet implements StockPriceService {
 	private static final long serialVersionUID = 6962781587812575499L;
-	private StockPriceRepository stockPricesRepository = new StockPriceInMemoryRepositoryImpl(
-			new StockPriceDataProviderImpl());
+	private StockPriceRepository stockPricesRepository;
+
+	public StockPriceServiceImpl(){
+		this.stockPricesRepository = new StockPriceInMemoryRepositoryImpl(
+				new StockPriceDataProviderImpl());
+	}
+
+	public StockPriceServiceImpl(StockPriceRepository stockPricesRepository){
+		this.stockPricesRepository = stockPricesRepository;
+	}
 
 	@Override
 	public List<StockPrice> getPrices(List<String> currencyCodes, Date date) throws BusinessException {
@@ -43,9 +51,5 @@ public class StockPriceServiceImpl extends RemoteServiceServlet implements Stock
 		}
 
 		return true;
-	}
-
-	public void setStockPricesRepository(StockPriceRepository stockPricesRepository) {
-		this.stockPricesRepository = stockPricesRepository;
 	}
 }
